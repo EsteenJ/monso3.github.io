@@ -104,6 +104,7 @@
 
 ## Pull Request 链接
 - **PR #1**: [docs: add project architecture documentation](https://github.com/EsteenJ/monso3.github.io/pull/1)
+- **PR #2**: [perf: optimize animations and add performance monitoring](https://github.com/EsteenJ/monso3.github.io/pull/2)
 
 ---
 
