@@ -106,6 +106,36 @@
 - **PR #1**: [docs: add project architecture documentation](https://github.com/EsteenJ/monso3.github.io/pull/1)
 - **PR #2**: [perf: optimize animations and add performance monitoring](https://github.com/EsteenJ/monso3.github.io/pull/2)
 
+## GitHub Issue全自动处理工作流配置
+
+### 配置时间
+2026-03-27
+
+### 配置内容
+1. **自动唤醒引擎** (`/.github/workflows/openhands-resolver.yml`)
+   - GitHub Actions 工作流，触发条件：
+     - Issue 创建 (`opened`)
+     - Issue 标记 (`labeled`)
+     - Issue 评论创建且提及 `@openhands-agent`
+   - 权限配置：`contents: write`, `pull-requests: write`, `issues: write`
+   - 使用 `all-hands-ai/openhands-resolver-action@main` 作为解析器
+
+2. **思考与拆解规范** (`/.openhands_instructions`)
+   - Plan-and-Solve 两阶段工作流：
+     - **第一步：需求翻译与拆解**（技术策划模式）
+     - **第二步：代码实现**（程序员模式）
+   - 强制要求：在修改代码前必须先完成详细技术实施计划
+   - PR 描述中必须包含第一步生成的『技术实施计划』
+
+3. **一键部署**
+   - 所有配置已提交到 `performance-optimization` 分支
+   - 工作流已推送到远程仓库，等待 GitHub Secrets 配置后即可启用
+
+### 后续配置要求
+- 在 GitHub 仓库 Settings → Secrets → Actions 中添加：
+  - `PAT`: 具有仓库写入权限的个人访问令牌
+  - `LLM_API_KEY`: OpenHands 代理的 API 密钥
+
 ---
 
 **创建时间**: 2026-03-27  
