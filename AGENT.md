@@ -55,13 +55,16 @@
 - `index.html`: 2773 行，约 98KB（包含所有样式和脚本）
 
 ## 操作计划
-1. 创建本文件记录操作。
-2. 分析 index.html 内容。
-3. 更新 README.md 的“项目架构”章节。
-4. 创建新分支并提交更改。
-5. 创建 Pull Request。
+1. 创建本文件记录操作。 ✅
+2. 分析 index.html 内容。 ✅
+3. 更新 README.md 的“项目架构”章节。 ✅
+4. 创建新分支并提交更改。 ✅
+5. 创建 Pull Request。 ✅
+
+## Pull Request 链接
+- **PR #1**: [docs: add project architecture documentation](https://github.com/EsteenJ/monso3.github.io/pull/1)
 
 ---
 
-**创建时间**: 2026-03-27
+**创建时间**: 2026-03-27  
 **操作者**: OpenHands Agent
