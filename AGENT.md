@@ -61,10 +61,52 @@
 4. 创建新分支并提交更改。 ✅
 5. 创建 Pull Request。 ✅
 
+## 性能优化操作记录
+
+### 已完成的性能优化（2026-03-27）
+
+1. **硬件加速优化**
+   - 为 `.train-window` 元素添加硬件加速属性
+   - 为 `.ws-curtain` 元素添加硬件加速属性  
+   - 为 `.ticket` 元素添加硬件加速属性
+
+2. **关键帧动画优化**
+   - 优化 `trainShake` 动画：减少关键帧数量，使用 `translate3d` 替代 `translate`
+   - 优化 `smokePuff` 动画：使用 `translate3d` 替代 `translate`
+   - 优化 `postcardSlide` 动画：使用 `translate3d` 替代 `translateX`
+   - 优化 `ticketDrop` 动画：使用 `translate3d` 替代 `translateY`
+
+3. **性能监控脚本**
+   - 添加 FPS 监测功能
+   - 添加动画性能检查
+   - 开发环境自动启动监控
+
+### 接下来的操作计划
+
+1. **性能测试与验证**
+   - 在浏览器中测试优化后的动画性能
+   - 验证硬件加速效果
+   - 检查 FPS 监控脚本是否正常工作
+
+2. **进一步优化建议**
+   - 分析并优化昂贵的 CSS 属性（box-shadow, filter）
+   - 考虑使用 `transform` 和 `opacity` 替代昂贵属性
+   - 检查是否有不必要的重绘和回流
+
+3. **文档更新**
+   - 更新 README.md 的性能优化章节
+   - 添加性能最佳实践文档
+
+4. **GitHub 同步**
+   - 提交性能优化更改
+   - 创建新的 Pull Request
+   - 记录 PR 链接
+
 ## Pull Request 链接
 - **PR #1**: [docs: add project architecture documentation](https://github.com/EsteenJ/monso3.github.io/pull/1)
 
 ---
 
 **创建时间**: 2026-03-27  
+**更新时间**: 2026-03-27  
 **操作者**: OpenHands Agent

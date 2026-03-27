@@ -126,6 +126,12 @@ section { padding: 72px 40px; max-width: 1100px; margin: 0 auto; }
   transition: height 0.4s cubic-bezier(0.34,1.56,0.64,1);
   cursor: grab;
   z-index: 20;
+  /* 性能优化：硬件加速 */
+  will-change: transform, height;
+  backface-visibility: hidden;
+  -webkit-font-smoothing: antialiased;
+  -webkit-transform: translateZ(0);
+  transform: translateZ(0);
 }
 .ws-curtain:active { cursor: grabbing; }
 
@@ -250,6 +256,12 @@ section { padding: 72px 40px; max-width: 1100px; margin: 0 auto; }
   transition: box-shadow 0.2s ease, transform 0.15s ease;
   cursor: grab;
   user-select: none;
+  /* 性能优化：硬件加速 */
+  will-change: transform, box-shadow, opacity;
+  backface-visibility: hidden;
+  -webkit-font-smoothing: antialiased;
+  -webkit-transform: translateZ(0);
+  transform: translateZ(0);
 }
 .ticket.dragging {
   cursor: grabbing;
@@ -271,8 +283,8 @@ section { padding: 72px 40px; max-width: 1100px; margin: 0 auto; }
   pointer-events: none;
 }
 @keyframes ticketDrop {
-  from { transform: translateY(-60px) rotate(-4deg); opacity: 0; }
-  to   { transform: translateY(0) rotate(0deg); opacity: 1; }
+  from { transform: translate3d(0,-60px,0) rotate(-4deg); opacity: 0; }
+  to   { transform: translate3d(0,0,0) rotate(0deg); opacity: 1; }
 }
 .ticket:hover {
   box-shadow: 10px 14px 36px rgba(59,42,26,0.5), 0 0 0 2px var(--brass);
@@ -638,8 +650,8 @@ section { padding: 72px 40px; max-width: 1100px; margin: 0 auto; }
   flex-direction: column;
 }
 @keyframes postcardSlide {
-  from { transform: translateX(30px); opacity: 0; }
-  to   { transform: translateX(0); opacity: 1; }
+  from { transform: translate3d(30px,0,0); opacity: 0; }
+  to   { transform: translate3d(0,0,0); opacity: 1; }
 }
 .train-window {
   position: relative;
@@ -654,6 +666,12 @@ section { padding: 72px 40px; max-width: 1100px; margin: 0 auto; }
   box-shadow: 0 0 0 3px #b8963e, inset 0 0 0 2px rgba(184,150,62,0.25);
   overflow: hidden;
   background: #87ceeb;
+  /* 性能优化：硬件加速 */
+  will-change: transform, opacity;
+  backface-visibility: hidden;
+  -webkit-font-smoothing: antialiased;
+  -webkit-transform: translateZ(0);
+  transform: translateZ(0);
 }
 .train-window::after {
   content: '';
@@ -683,20 +701,13 @@ section { padding: 72px 40px; max-width: 1100px; margin: 0 auto; }
   opacity: 0.65;
 }
 
-/* Train shake animation */
+/* Train shake animation - 性能优化版 */
 @keyframes trainShake {
-  0%   { transform: translate(0,0) rotate(0deg); }
-  8%   { transform: translate(-5px, 3px) rotate(-0.7deg); }
-  16%  { transform: translate(6px,-4px) rotate(0.8deg); }
-  24%  { transform: translate(-7px, 4px) rotate(-0.9deg); }
-  32%  { transform: translate(5px,-3px) rotate(0.6deg); }
-  40%  { transform: translate(-6px, 5px) rotate(-0.7deg); }
-  50%  { transform: translate(7px,-3px) rotate(0.8deg); }
-  60%  { transform: translate(-4px, 4px) rotate(-0.5deg); }
-  70%  { transform: translate(5px,-2px) rotate(0.4deg); }
-  80%  { transform: translate(-3px, 2px) rotate(-0.3deg); }
-  90%  { transform: translate(2px,-1px) rotate(0.15deg); }
-  100% { transform: translate(0,0) rotate(0deg); }
+  0%   { transform: translate3d(0,0,0) rotate(0deg); }
+  25%  { transform: translate3d(-6px, 4px, 0) rotate(-0.8deg); }
+  50%  { transform: translate3d(7px, -3px, 0) rotate(0.8deg); }
+  75%  { transform: translate3d(-4px, 2px, 0) rotate(-0.4deg); }
+  100% { transform: translate3d(0,0,0) rotate(0deg); }
 }
 .train-window.shaking {
   animation: trainShake 0.7s cubic-bezier(0.36,0.07,0.19,0.97);
@@ -1043,10 +1054,10 @@ section { padding: 72px 40px; max-width: 1100px; margin: 0 auto; }
 .smoke.puff2 { animation: smokePuff 3s ease 0.18s forwards; }
 .smoke.puff3 { animation: smokePuff 3s ease 0.36s forwards; }
 @keyframes smokePuff {
-  0%   { opacity: 0; transform: translate(0,0) scale(0.4); }
-  15%  { opacity: 0.85; transform: translate(0,-10px) scale(1); }
-  75%  { opacity: 0.25; transform: translate(-14px,-30px) scale(1.6); }
-  100% { opacity: 0; transform: translate(-20px,-44px) scale(2); }
+  0%   { opacity: 0; transform: translate3d(0,0,0) scale(0.4); }
+  15%  { opacity: 0.85; transform: translate3d(0,-10px,0) scale(1); }
+  75%  { opacity: 0.25; transform: translate3d(-14px,-30px,0) scale(1.6); }
+  100% { opacity: 0; transform: translate3d(-20px,-44px,0) scale(2); }
 }
 
 /* PORTFOLIO */
@@ -2769,6 +2780,101 @@ function showPage(index){
   }
   requestAnimationFrame(t=>{lastT2=t;drawBoard(t);});
 })();
+
+  // 性能监测脚本
+  (function() {
+    'use strict';
+    
+    // FPS监测
+    let frameCount = 0;
+    let lastTime = performance.now();
+    let fps = 60;
+    let isMonitoring = false;
+    
+    function checkFPS() {
+      frameCount++;
+      const now = performance.now();
+      if (now >= lastTime + 1000) {
+        fps = frameCount;
+        frameCount = 0;
+        lastTime = now;
+        
+        // 只在FPS低于50时警告
+        if (fps < 50) {
+          console.warn(`⚠️ 性能警告: 当前FPS为 ${fps}。建议优化动画性能。`);
+        }
+      }
+      if (isMonitoring) {
+        requestAnimationFrame(checkFPS);
+      }
+    }
+    
+    // 动画性能监测
+    function monitorAnimations() {
+      const animations = document.getAnimations();
+      let hasHeavyAnimations = false;
+      
+      animations.forEach(anim => {
+        // 检查动画是否在运行并且可能影响性能
+        if (anim.playState === 'running') {
+          // 检查动画是否使用了可能昂贵的属性
+          const target = anim.effect ? anim.effect.target : null;
+          if (target) {
+            const style = window.getComputedStyle(target);
+            // 检查是否使用了box-shadow或filter等昂贵属性
+            const boxShadow = style.boxShadow;
+            const filter = style.filter;
+            const backdropFilter = style.backdropFilter;
+            
+            if (boxShadow && boxShadow !== 'none' && boxShadow !== 'initial') {
+              console.warn(`⚠️ 检测到可能昂贵的box-shadow动画在元素:`, target);
+              hasHeavyAnimations = true;
+            }
+            
+            if (filter && filter !== 'none' && filter !== 'initial') {
+              console.warn(`⚠️ 检测到可能昂贵的filter动画在元素:`, target);
+              hasHeavyAnimations = true;
+            }
+          }
+        }
+      });
+      
+      if (hasHeavyAnimations) {
+        console.info('💡 性能优化建议: 考虑对box-shadow和filter动画使用transform和opacity替代。');
+      }
+    }
+    
+    // 启动监测
+    function startMonitoring() {
+      if (!isMonitoring) {
+        isMonitoring = true;
+        console.log('🚀 开始性能监测...');
+        requestAnimationFrame(checkFPS);
+        
+        // 每5秒检查一次动画性能
+        setInterval(monitorAnimations, 5000);
+      }
+    }
+    
+    // 停止监测
+    function stopMonitoring() {
+      isMonitoring = false;
+    }
+    
+    // 导出到全局，方便调试
+    window.PerformanceMonitor = {
+      start: startMonitoring,
+      stop: stopMonitoring,
+      getFPS: () => fps
+    };
+    
+    // 默认在开发模式下启动监测
+    if (location.hostname === 'localhost' || location.hostname === '127.0.0.1') {
+      window.addEventListener('load', () => {
+        setTimeout(startMonitoring, 1000);
+      });
+    }
+  })();
 </script>
 </body>
 </html>
